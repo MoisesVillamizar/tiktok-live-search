@@ -253,6 +253,175 @@ La interfaz incluye:
 
 ## 🚀 Deployment
 
+### Docker en tu Servidor (Contabo/Hostinger/VPS)
+
+**Método recomendado para servidores propios**
+
+#### 1. Requisitos en el servidor
+
+```bash
+# Actualizar sistema
+sudo apt update && sudo apt upgrade -y
+
+# Instalar Docker
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+
+# Instalar Docker Compose
+sudo apt install docker-compose -y
+
+# Agregar usuario al grupo docker (opcional)
+sudo usermod -aG docker $USER
+```
+
+#### 2. Clonar repositorio en el servidor
+
+```bash
+# SSH al servidor
+ssh user@tu-servidor.com
+
+# Clonar repositorio
+git clone https://github.com/MoisesVillamizar/tiktok-live-search.git
+cd tiktok-live-search
+```
+
+#### 3. Configurar variables de entorno
+
+```bash
+# Copiar plantilla
+cp .env.example .env
+
+# Editar con tus credenciales
+nano .env
+```
+
+Agrega tus credenciales:
+```env
+TIKAPI_KEY=tu_api_key_real
+TIKAPI_ACCOUNT_KEY=tu_account_key_real
+```
+
+#### 4. Desplegar con un comando
+
+```bash
+# Script automático de deployment
+./deploy.sh
+```
+
+El script automáticamente:
+- ✅ Verifica que exista `.env`
+- ✅ Crea directorio de datos
+- ✅ Detiene contenedores antiguos
+- ✅ Construye nueva imagen Docker
+- ✅ Inicia el servicio
+- ✅ Verifica que todo esté corriendo
+
+#### 5. Comandos útiles
+
+```bash
+# Ver logs en tiempo real
+docker-compose logs -f
+
+# Detener servicio
+docker-compose down
+
+# Reiniciar servicio
+docker-compose restart
+
+# Ver estado
+docker-compose ps
+
+# Reconstruir y reiniciar
+docker-compose up -d --build
+```
+
+#### 6. Configurar dominio y SSL
+
+**Nginx con Let's Encrypt:**
+
+```bash
+# Instalar Nginx
+sudo apt install nginx -y
+
+# Instalar Certbot
+sudo apt install certbot python3-certbot-nginx -y
+
+# Configurar Nginx
+sudo nano /etc/nginx/sites-available/tiktok-monitor
+```
+
+Contenido del archivo:
+```nginx
+server {
+    listen 80;
+    server_name tu-dominio.com;
+
+    location / {
+        proxy_pass http://localhost:8000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+```
+
+```bash
+# Activar sitio
+sudo ln -s /etc/nginx/sites-available/tiktok-monitor /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl restart nginx
+
+# Obtener certificado SSL
+sudo certbot --nginx -d tu-dominio.com
+```
+
+#### 7. Auto-deploy con GitHub Actions (Opcional)
+
+Crea `.github/workflows/deploy.yml`:
+
+```yaml
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd /path/to/tiktok-live-search
+            git pull origin main
+            ./deploy.sh
+```
+
+Configura secrets en GitHub:
+- `SERVER_HOST`: IP o dominio del servidor
+- `SERVER_USER`: Usuario SSH
+- `SERVER_SSH_KEY`: Llave privada SSH
+
+### Railway.app
+
+**Para deployment rápido sin servidor propio**
+
+1. Crea nuevo proyecto desde GitHub
+2. Conecta el repositorio `tiktok-live-search`
+3. Agrega variables de entorno:
+   - `TIKAPI_KEY`
+   - `TIKAPI_ACCOUNT_KEY`
+4. Deploy automático
+
 ### Render.com
 
 1. Crea un nuevo Web Service
@@ -265,12 +434,6 @@ La interfaz incluye:
    - `TIKAPI_ACCOUNT_KEY`
    - `PORT=8000`
 
-### Railway.app
-
-1. Crea nuevo proyecto desde GitHub
-2. Agrega variables de entorno
-3. Deploy automático
-
 ### Heroku
 
 ```bash
@@ -279,31 +442,6 @@ heroku create your-app-name
 heroku config:set TIKAPI_KEY=your_key
 heroku config:set TIKAPI_ACCOUNT_KEY=your_account_key
 git push heroku main
-```
-
-### Docker
-
-```dockerfile
-FROM python:3.11-slim
-
-WORKDIR /app
-
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY . .
-
-EXPOSE 8000
-
-CMD ["python", "main.py"]
-```
-
-```bash
-docker build -t kp-digital-tiktok .
-docker run -d -p 8000:8000 \
-  -e TIKAPI_KEY=your_key \
-  -e TIKAPI_ACCOUNT_KEY=your_account_key \
-  kp-digital-tiktok
 ```
 
 ## 📝 Variables de Entorno

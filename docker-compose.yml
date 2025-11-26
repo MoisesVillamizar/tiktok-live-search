@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  tiktok-monitor:
+    build: .
+    container_name: kp-digital-tiktok
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - TIKAPI_KEY=${TIKAPI_KEY}
+      - TIKAPI_ACCOUNT_KEY=${TIKAPI_ACCOUNT_KEY}
+      - DATABASE_URL=sqlite:////app/data/tiktok_monitor.db
+      - HOST=0.0.0.0
+      - PORT=8000
+    volumes:
+      - ./data:/app/data
+      - ./tiktok_monitor.log:/app/tiktok_monitor.log
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - tiktok-network
+
+networks:
+  tiktok-network:
+    driver: bridge
+
+volumes:
+  data:
