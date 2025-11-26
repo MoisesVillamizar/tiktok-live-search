@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   tiktok-monitor:
-    image: kpdigital/tiktok-live-search:latest
+    image: moivillaz/tiktok-live-search:latest
     container_name: kp-digital-tiktok
     restart: unless-stopped
     ports:

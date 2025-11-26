@@ -31,7 +31,7 @@ docker-compose down || true
 
 # Descargar última imagen de Docker Hub
 echo -e "${YELLOW}📥 Descargando última imagen de Docker Hub...${NC}"
-docker pull kpdigital/tiktok-live-search:latest
+docker pull moivillaz/tiktok-live-search:latest
 
 # Iniciar contenedores
 echo -e "${YELLOW}▶️  Iniciando contenedores...${NC}"

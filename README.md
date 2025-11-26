@@ -257,7 +257,7 @@ La interfaz incluye:
 
 **Método recomendado - Imagen ya construida en Docker Hub**
 
-La aplicación está publicada en Docker Hub: **`kpdigital/tiktok-live-search:latest`**
+La aplicación está publicada en Docker Hub: **`moivillaz/tiktok-live-search:latest`**
 
 Cada vez que haces push a `main`, GitHub Actions automáticamente construye y publica la imagen en Docker Hub.
 
