@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Live Monitor</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📱 TikTok Live Monitor</h1>
+            <div class="connection-status">
+                <span id="status-indicator" class="status-indicator offline"></span>
+                <span id="status-text">Desconectado</span>
+            </div>
+        </header>
+
+        <!-- Statistics Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="total-streamers">-</div>
+                <div class="stat-label">Total Streamers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="live-streamers">-</div>
+                <div class="stat-label">En Vivo Ahora</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="total-scans">-</div>
+                <div class="stat-label">Escaneos (24h)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="success-rate">-</div>
+                <div class="stat-label">Tasa de Éxito</div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="charts-container">
+            <div class="chart-card">
+                <h3>Streamers por Query</h3>
+                <canvas id="queryChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Historial de Escaneos</h3>
+                <canvas id="scanHistoryChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+            <div class="filter-group">
+                <label for="filter-query">Query:</label>
+                <select id="filter-query">
+                    <option value="">Todas</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="filter-status">Estado:</label>
+                <select id="filter-status">
+                    <option value="">Todos</option>
+                    <option value="true">En Vivo</option>
+                    <option value="false">Offline</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <button id="refresh-btn" class="btn-primary">🔄 Actualizar</button>
+            </div>
+        </div>
+
+        <!-- Streamers Table -->
+        <div class="table-container">
+            <h2>Streamers Monitoreados</h2>
+            <div class="table-wrapper">
+                <table id="streamers-table">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Query</th>
+                            <th>Estado</th>
+                            <th>Veces Visto</th>
+                            <th>Primera Vez</th>
+                            <th>Última Vez</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="streamers-tbody">
+                        <tr>
+                            <td colspan="7" class="loading">Cargando datos...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination">
+                <button id="prev-page" class="btn-secondary" disabled>← Anterior</button>
+                <span id="page-info">Página 1</span>
+                <button id="next-page" class="btn-secondary">Siguiente →</button>
+            </div>
+        </div>
+
+        <!-- Recent Scans -->
+        <div class="scans-container">
+            <h2>Historial de Escaneos Recientes</h2>
+            <div class="scans-list" id="scans-list">
+                <div class="loading">Cargando historial...</div>
+            </div>
+        </div>
+
+        <!-- Last Update Info -->
+        <div class="last-update">
+            <span id="last-update-text">Última actualización: -</span>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container"></div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

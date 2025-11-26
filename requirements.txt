@@ -1,0 +1,22 @@
+# FastAPI and server dependencies
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+websockets==12.0
+
+# Database
+sqlalchemy>=2.0.35
+alembic>=1.13.0
+
+# TikTok API
+tikapi>=1.0.0
+
+# Scheduling
+apscheduler==3.10.4
+
+# Environment and configuration
+python-dotenv==1.0.0
+
+# Logging and utilities
+coloredlogs==15.0.1
+python-json-logger==2.0.7
