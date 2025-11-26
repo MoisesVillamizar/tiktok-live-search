@@ -253,11 +253,22 @@ La interfaz incluye:
 
 ## 🚀 Deployment
 
-### Docker en tu Servidor (Contabo/Hostinger/VPS)
+### 🐳 Docker Hub + Servidor VPS (Contabo/Hostinger)
 
-**Método recomendado para servidores propios**
+**Método recomendado - Imagen ya construida en Docker Hub**
 
-#### 1. Requisitos en el servidor
+La aplicación está publicada en Docker Hub: **`kpdigital/tiktok-live-search:latest`**
+
+Cada vez que haces push a `main`, GitHub Actions automáticamente construye y publica la imagen en Docker Hub.
+
+#### 1. Configurar GitHub Secrets (Solo primera vez)
+
+Ve a tu repositorio en GitHub → Settings → Secrets and variables → Actions, y agrega:
+
+- `DOCKER_USERNAME`: Tu usuario de Docker Hub
+- `DOCKER_PASSWORD`: Tu password o token de Docker Hub
+
+#### 2. Requisitos en el servidor
 
 ```bash
 # Actualizar sistema
@@ -274,18 +285,18 @@ sudo apt install docker-compose -y
 sudo usermod -aG docker $USER
 ```
 
-#### 2. Clonar repositorio en el servidor
+#### 3. Clonar repositorio en el servidor
 
 ```bash
 # SSH al servidor
 ssh user@tu-servidor.com
 
-# Clonar repositorio
+# Clonar repositorio (solo necesitas docker-compose.yml y .env)
 git clone https://github.com/MoisesVillamizar/tiktok-live-search.git
 cd tiktok-live-search
 ```
 
-#### 3. Configurar variables de entorno
+#### 4. Configurar variables de entorno
 
 ```bash
 # Copiar plantilla
@@ -301,7 +312,7 @@ TIKAPI_KEY=tu_api_key_real
 TIKAPI_ACCOUNT_KEY=tu_account_key_real
 ```
 
-#### 4. Desplegar con un comando
+#### 5. Desplegar con un comando
 
 ```bash
 # Script automático de deployment
@@ -312,11 +323,24 @@ El script automáticamente:
 - ✅ Verifica que exista `.env`
 - ✅ Crea directorio de datos
 - ✅ Detiene contenedores antiguos
-- ✅ Construye nueva imagen Docker
+- ✅ **Descarga última imagen de Docker Hub**
 - ✅ Inicia el servicio
 - ✅ Verifica que todo esté corriendo
 
-#### 5. Comandos útiles
+#### 6. Actualizar a la última versión
+
+Cuando hagas cambios y pushes a GitHub, la imagen se actualiza automáticamente en Docker Hub. Para actualizar tu servidor:
+
+```bash
+# En tu servidor, simplemente ejecuta:
+./deploy.sh
+
+# O manualmente:
+docker-compose pull
+docker-compose up -d
+```
+
+#### 7. Comandos útiles
 
 ```bash
 # Ver logs en tiempo real
@@ -331,11 +355,11 @@ docker-compose restart
 # Ver estado
 docker-compose ps
 
-# Reconstruir y reiniciar
-docker-compose up -d --build
+# Actualizar a última versión
+docker-compose pull && docker-compose up -d
 ```
 
-#### 6. Configurar dominio y SSL
+#### 8. Configurar dominio y SSL
 
 **Nginx con Let's Encrypt:**
 
@@ -379,37 +403,25 @@ sudo systemctl restart nginx
 sudo certbot --nginx -d tu-dominio.com
 ```
 
-#### 7. Auto-deploy con GitHub Actions (Opcional)
+#### 9. Flujo de trabajo completo
 
-Crea `.github/workflows/deploy.yml`:
-
-```yaml
-name: Deploy to VPS
-
-on:
-  push:
-    branches: [ main ]
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to server
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          script: |
-            cd /path/to/tiktok-live-search
-            git pull origin main
-            ./deploy.sh
+```
+1. Haces cambios en el código local
+2. git push origin main
+3. GitHub Actions construye imagen y la sube a Docker Hub
+4. En tu servidor ejecutas: ./deploy.sh
+5. El servidor descarga la última imagen y la despliega
 ```
 
-Configura secrets en GitHub:
-- `SERVER_HOST`: IP o dominio del servidor
-- `SERVER_USER`: Usuario SSH
-- `SERVER_SSH_KEY`: Llave privada SSH
+### 🏗️ Construcción Local (Opcional)
+
+Si prefieres construir la imagen localmente en lugar de usar Docker Hub:
+
+```bash
+# Usa el archivo docker-compose.build.yml
+docker-compose -f docker-compose.build.yml build
+docker-compose -f docker-compose.build.yml up -d
+```
 
 ### Railway.app
 

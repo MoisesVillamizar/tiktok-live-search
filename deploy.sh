@@ -29,13 +29,9 @@ mkdir -p data
 echo -e "${YELLOW}🛑 Deteniendo contenedores existentes...${NC}"
 docker-compose down || true
 
-# Eliminar imágenes antiguas (opcional, descomenta si quieres)
-# echo -e "${YELLOW}🗑️  Eliminando imágenes antiguas...${NC}"
-# docker-compose down --rmi all || true
-
-# Construir nueva imagen
-echo -e "${YELLOW}🔨 Construyendo imagen Docker...${NC}"
-docker-compose build --no-cache
+# Descargar última imagen de Docker Hub
+echo -e "${YELLOW}📥 Descargando última imagen de Docker Hub...${NC}"
+docker pull kpdigital/tiktok-live-search:latest
 
 # Iniciar contenedores
 echo -e "${YELLOW}▶️  Iniciando contenedores...${NC}"

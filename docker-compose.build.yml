@@ -1,8 +1,11 @@
 version: '3.8'
 
+# Este archivo es para construir la imagen localmente
+# Usa este archivo si quieres construir tu propia imagen personalizada
+
 services:
   tiktok-monitor:
-    image: kpdigital/tiktok-live-search:latest
+    build: .
     container_name: kp-digital-tiktok
     restart: unless-stopped
     ports:
