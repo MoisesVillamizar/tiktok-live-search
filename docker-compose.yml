@@ -41,6 +41,7 @@ services:
 
         # Service configuration
         - "traefik.http.services.kpdigital-service.loadbalancer.server.port=8000"
+        - "traefik.http.services.kpdigital-service.loadbalancer.passHostHeader=true"
 
         # HTTP to HTTPS redirect
         - "traefik.http.routers.kpdigital-frontend-http.rule=Host(`kpdigital.aineo.space`)"
