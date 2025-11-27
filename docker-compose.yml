@@ -5,8 +5,6 @@ services:
     image: moivillaz/tiktok-live-search:latest
     container_name: kp-digital-tiktok
     restart: unless-stopped
-    ports:
-      - "8000:8000"
     environment:
       - TIKAPI_KEY=${TIKAPI_KEY}
       - TIKAPI_ACCOUNT_KEY=${TIKAPI_ACCOUNT_KEY}
@@ -23,12 +21,42 @@ services:
       retries: 3
       start_period: 40s
     networks:
-      - kp_tiktok_network
+      - traefik_default
+    deploy:
+      labels:
+        # Enable Traefik
+        - "traefik.enable=true"
+
+        # Frontend domain - kpdigital.aineo.space
+        - "traefik.http.routers.kpdigital-frontend.rule=Host(`kpdigital.aineo.space`)"
+        - "traefik.http.routers.kpdigital-frontend.entrypoints=websecure"
+        - "traefik.http.routers.kpdigital-frontend.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.kpdigital-frontend.service=kpdigital-service"
+
+        # Backend domain - kpbackend.aineo.space
+        - "traefik.http.routers.kpdigital-backend.rule=Host(`kpbackend.aineo.space`)"
+        - "traefik.http.routers.kpdigital-backend.entrypoints=websecure"
+        - "traefik.http.routers.kpdigital-backend.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.kpdigital-backend.service=kpdigital-service"
+
+        # Service configuration
+        - "traefik.http.services.kpdigital-service.loadbalancer.server.port=8000"
+
+        # HTTP to HTTPS redirect
+        - "traefik.http.routers.kpdigital-frontend-http.rule=Host(`kpdigital.aineo.space`)"
+        - "traefik.http.routers.kpdigital-frontend-http.entrypoints=web"
+        - "traefik.http.routers.kpdigital-frontend-http.middlewares=redirect-to-https"
+        - "traefik.http.routers.kpdigital-backend-http.rule=Host(`kpbackend.aineo.space`)"
+        - "traefik.http.routers.kpdigital-backend-http.entrypoints=web"
+        - "traefik.http.routers.kpdigital-backend-http.middlewares=redirect-to-https"
+
+        # Redirect middleware
+        - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+        - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true"
 
 networks:
-  kp_tiktok_network:
-    name: kp_tiktok_network
-    driver: bridge
+  traefik_default:
+    external: true
 
 volumes:
   kp_tiktok_data:
