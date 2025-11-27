@@ -43,17 +43,6 @@ services:
         - "traefik.http.services.tiktok_monitor.loadbalancer.server.port=8000"
         - "traefik.http.services.tiktok_monitor.loadbalancer.passHostHeader=true"
 
-        # HTTP to HTTPS redirect
-        - "traefik.http.routers.kpdigital-frontend-http.rule=Host(`kpdigital.aineo.space`)"
-        - "traefik.http.routers.kpdigital-frontend-http.entrypoints=web"
-        - "traefik.http.routers.kpdigital-frontend-http.middlewares=redirect-to-https"
-        - "traefik.http.routers.kpdigital-backend-http.rule=Host(`kpbackend.aineo.space`)"
-        - "traefik.http.routers.kpdigital-backend-http.entrypoints=web"
-        - "traefik.http.routers.kpdigital-backend-http.middlewares=redirect-to-https"
-
-        # Redirect middleware
-        - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
-        - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true"
 
 networks:
   traefik_default:
