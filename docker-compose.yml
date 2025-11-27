@@ -30,13 +30,13 @@ services:
         # Frontend domain - kpdigital.aineo.space
         - "traefik.http.routers.kpdigital-frontend.rule=Host(`kpdigital.aineo.space`)"
         - "traefik.http.routers.kpdigital-frontend.entrypoints=websecure"
-        - "traefik.http.routers.kpdigital-frontend.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.kpdigital-frontend.tls.certresolver=letsencryptresolver"
         - "traefik.http.routers.kpdigital-frontend.service=kpdigital-service"
 
         # Backend domain - kpbackend.aineo.space
         - "traefik.http.routers.kpdigital-backend.rule=Host(`kpbackend.aineo.space`)"
         - "traefik.http.routers.kpdigital-backend.entrypoints=websecure"
-        - "traefik.http.routers.kpdigital-backend.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.kpdigital-backend.tls.certresolver=letsencryptresolver"
         - "traefik.http.routers.kpdigital-backend.service=kpdigital-service"
 
         # Service configuration
