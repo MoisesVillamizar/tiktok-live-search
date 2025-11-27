@@ -14,8 +14,8 @@ services:
       - HOST=0.0.0.0
       - PORT=8000
     volumes:
-      - ./data:/app/data
-      - ./tiktok_monitor.log:/app/tiktok_monitor.log
+      - kp_tiktok_data:/app/data
+      - kp_tiktok_logs:/app
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 30s
@@ -23,11 +23,15 @@ services:
       retries: 3
       start_period: 40s
     networks:
-      - tiktok-network
+      - kp_tiktok_network
 
 networks:
-  tiktok-network:
+  kp_tiktok_network:
+    name: kp_tiktok_network
     driver: bridge
 
 volumes:
-  data:
+  kp_tiktok_data:
+    name: kp_tiktok_data
+  kp_tiktok_logs:
+    name: kp_tiktok_logs

@@ -25,9 +25,10 @@ fi
 echo -e "${YELLOW}📁 Creando directorio de datos...${NC}"
 mkdir -p data
 
-# Detener contenedores existentes
-echo -e "${YELLOW}🛑 Deteniendo contenedores existentes...${NC}"
-docker-compose down || true
+# Detener solo el contenedor de esta app (sin afectar networks/volumes de otras apps)
+echo -e "${YELLOW}🛑 Deteniendo contenedor existente...${NC}"
+docker stop kp-digital-tiktok 2>/dev/null || true
+docker rm kp-digital-tiktok 2>/dev/null || true
 
 # Descargar última imagen de Docker Hub
 echo -e "${YELLOW}📥 Descargando última imagen de Docker Hub...${NC}"
