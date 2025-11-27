@@ -28,20 +28,20 @@ services:
         - "traefik.enable=true"
 
         # Frontend domain - kpdigital.aineo.space
-        - "traefik.http.routers.kpdigital-frontend.rule=Host(`kpdigital.aineo.space`)"
-        - "traefik.http.routers.kpdigital-frontend.entrypoints=websecure"
-        - "traefik.http.routers.kpdigital-frontend.tls.certresolver=letsencryptresolver"
-        - "traefik.http.routers.kpdigital-frontend.service=kpdigital-service"
+        - "traefik.http.routers.tiktok_monitor.rule=Host(`kpdigital.aineo.space`)"
+        - "traefik.http.routers.tiktok_monitor.entrypoints=websecure"
+        - "traefik.http.routers.tiktok_monitor.tls.certresolver=letsencryptresolver"
+        - "traefik.http.routers.tiktok_monitor.service=tiktok_monitor"
 
         # Backend domain - kpbackend.aineo.space
-        - "traefik.http.routers.kpdigital-backend.rule=Host(`kpbackend.aineo.space`)"
-        - "traefik.http.routers.kpdigital-backend.entrypoints=websecure"
-        - "traefik.http.routers.kpdigital-backend.tls.certresolver=letsencryptresolver"
-        - "traefik.http.routers.kpdigital-backend.service=kpdigital-service"
+        - "traefik.http.routers.tiktok_monitor_backend.rule=Host(`kpbackend.aineo.space`)"
+        - "traefik.http.routers.tiktok_monitor_backend.entrypoints=websecure"
+        - "traefik.http.routers.tiktok_monitor_backend.tls.certresolver=letsencryptresolver"
+        - "traefik.http.routers.tiktok_monitor_backend.service=tiktok_monitor"
 
         # Service configuration
-        - "traefik.http.services.kpdigital-service.loadbalancer.server.port=8000"
-        - "traefik.http.services.kpdigital-service.loadbalancer.passHostHeader=true"
+        - "traefik.http.services.tiktok_monitor.loadbalancer.server.port=8000"
+        - "traefik.http.services.tiktok_monitor.loadbalancer.passHostHeader=true"
 
         # HTTP to HTTPS redirect
         - "traefik.http.routers.kpdigital-frontend-http.rule=Host(`kpdigital.aineo.space`)"
